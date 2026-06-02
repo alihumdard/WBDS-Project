@@ -1,0 +1,13 @@
+{
+  "navigation": {
+    "home": "الرئيسية",
+    "about": "نبذة عنا",
+    "services": "خدماتنا",
+    "blogs": "المدونات",
+    "contact": "اتصل بنا"
+  },
+  "common": {
+    "getQuote": "احصل على عرض أسعار",
+    "readMore": "اقرأ المزيد"
+  }
+}

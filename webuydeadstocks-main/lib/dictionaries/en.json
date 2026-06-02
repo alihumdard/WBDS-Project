@@ -1,0 +1,13 @@
+{
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "services": "Services",
+    "blogs": "Blogs",
+    "contact": "Contact"
+  },
+  "common": {
+    "getQuote": "Get A Quote",
+    "readMore": "Read More"
+  }
+}
