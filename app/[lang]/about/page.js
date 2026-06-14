@@ -83,7 +83,7 @@ export default function AboutUs() {
 
               <p className="text-gray-700 text-lg">
                 Learn more about our founder and CEO,{' '}
-                <Link href="#" className="text-green-600 hover:text-green-700 font-semibold hover:underline">
+                <Link href="/contact" className="text-green-600 hover:text-green-700 font-semibold hover:underline">
                   Hashim Chaudhary
                 </Link>
                 , who has over 21 years of experience in dead stock liquidation and
@@ -142,7 +142,7 @@ export default function AboutUs() {
             We Have You Covered
           </h2>
           <Link
-            href="https://webuydeadstock.com"
+            href="/get-free-valuation-dead-stocks"
             className="inline-block bg-white text-gray-900 px-10 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
             target="_blank"
           >

@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import connectToDatabase from '@/lib/mongodb';
 import Blog from '@/models/Blog';
+import { replaceOutdatedInternalHrefs } from '@/lib/urlReplacements';
 
 async function fetchLocalArticle(slug) {
     await connectToDatabase();
@@ -127,7 +128,7 @@ export default async function BlogPostPage({ params }) {
                         prose-ol:text-gray-700 prose-ol:text-lg
                         [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:text-gray-900 [&>h2]:mb-4 [&>h2]:mt-10
                         [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:text-gray-900 [&>h3]:mb-4 [&>h3]:mt-8"
-                        dangerouslySetInnerHTML={{ __html: article.contentHtml }}
+                        dangerouslySetInnerHTML={{ __html: replaceOutdatedInternalHrefs(article.contentHtml) }}
                     />
                 </div>
             </div>

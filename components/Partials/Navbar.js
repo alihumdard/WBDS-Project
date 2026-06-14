@@ -123,7 +123,7 @@ const Navbar = () => {
                 </button>
               </div>
             </div>
-            <Link href="https://www.webuydeadstock.com/get-free-valuation-dead-stocks" className="text-white font-semibold tracking-wider uppercase hover:text-gray-300 transition-colors" style={{ fontSize: 'min(0.97vw, 14px)' }} onClick={() => trackCtaClick({ buttonName: 'Get Free Valuation', location: 'Navbar', linkUrl: 'https://www.webuydeadstock.com/get-free-valuation-dead-stocks' })}>
+            <Link href="/get-free-valuation-dead-stocks" className="text-white font-semibold tracking-wider uppercase hover:text-gray-300 transition-colors" style={{ fontSize: 'min(0.97vw, 14px)' }} onClick={() => trackCtaClick({ buttonName: 'Get Free Valuation', location: 'Navbar', linkUrl: '/get-free-valuation-dead-stocks' })}>
               GET A FREE VALUATION
             </Link>
             <Link href="https://calendly.com/webuydeadstocks-info/30min?primary_color=80d741" className="flex items-center justify-center bg-transparent text-green-500 border border-green-500 font-bold tracking-wider uppercase hover:bg-green-500 duration-500 hover:text-white" style={{ fontSize: 'min(0.97vw, 14px)', padding: 'min(0.7vw, 10px) min(1.6vw, 24px)' }} onClick={() => trackCtaClick({ buttonName: 'Book A Call', location: 'Navbar', linkUrl: 'https://calendly.com/webuydeadstocks-info/30min?primary_color=80d741' })}>
