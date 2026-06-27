@@ -78,13 +78,21 @@ export default function AdminBlogsPage() {
                 
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <h1 className="text-2xl font-bold">Manage Blogs</h1>
-                    <Link
-                        href="/admin/uploadBlogs"
-                        className="inline-flex items-center justify-center gap-2 bg-[#008060] hover:bg-[#006e52] text-white px-4 py-2 rounded-md font-medium transition duration-150"
-                    >
-                        <Plus className="w-5 h-5" />
-                        Create Blog
-                    </Link>
+                    <div className="flex gap-2">
+                        <Link
+                            href="/admin/services"
+                            className="inline-flex items-center justify-center bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md font-medium hover:bg-gray-50 transition duration-150"
+                        >
+                            Services
+                        </Link>
+                        <Link
+                            href="/admin/uploadBlogs"
+                            className="inline-flex items-center justify-center gap-2 bg-[#008060] hover:bg-[#006e52] text-white px-4 py-2 rounded-md font-medium transition duration-150"
+                        >
+                            <Plus className="w-5 h-5" />
+                            Create Blog
+                        </Link>
+                    </div>
                 </div>
 
                 

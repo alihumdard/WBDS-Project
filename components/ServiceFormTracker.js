@@ -39,6 +39,7 @@ const getCtaLabel = (element) => {
   if (href.includes("instagram")) return "Instagram";
   if (href.includes("linkedin")) return "LinkedIn";
   if (href.includes("facebook")) return "Facebook";
+  if (href.includes("whatsapp") || href.includes("wa.me")) return "WhatsApp";
   if (href.includes("contact")) return "Contact Us";
   if (href.includes("valuation")) return "Get Free Valuation";
 
@@ -60,10 +61,34 @@ const isTrackableServiceCta = (element) => {
     signal.includes("get quote") ||
     signal.includes("book a call") ||
     signal.includes("schedule") ||
+    signal.includes("whatsapp") ||
+    signal.includes("wa.me") ||
+    signal.includes("api.whatsapp.com") ||
     signal.includes("instagram") ||
     signal.includes("linkedin") ||
     signal.includes("facebook")
   );
+};
+
+const sendGtagEvent = (eventName, params = {}) => {
+  if (typeof window === "undefined" || !window.gtag) return Promise.resolve();
+
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+
+    window.gtag("event", eventName, {
+      ...params,
+      event_callback: done,
+      event_timeout: 800,
+    });
+
+    window.setTimeout(done, 900);
+  });
 };
 
 export default function ServiceFormTracker({ serviceTitle }) {
@@ -114,7 +139,7 @@ export default function ServiceFormTracker({ serviceTitle }) {
 
         const submissionId = Date.now().toString();
         window.sessionStorage.setItem("wbds_form_conversion_pending", submissionId);
-        window.gtag?.("event", "form_submit", {
+        await sendGtagEvent("form_submit", {
           event_category: "Service Form",
           event_label: serviceTitle,
           form_name: getSubmitLabel(form),

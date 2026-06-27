@@ -24,6 +24,27 @@ const TikTokIcon = ({ className, strokeWidth = 1.5 }) => (
     </svg>
 );
 
+const sendGtagEvent = (eventName, params = {}) => {
+    if (typeof window === 'undefined' || !window.gtag) return Promise.resolve();
+
+    return new Promise((resolve) => {
+        let settled = false;
+        const done = () => {
+            if (settled) return;
+            settled = true;
+            resolve();
+        };
+
+        window.gtag('event', eventName, {
+            ...params,
+            event_callback: done,
+            event_timeout: 800,
+        });
+
+        window.setTimeout(done, 900);
+    });
+};
+
 const ContactPage = () => {
     const router = useRouter();
     const formRef = useRef();
@@ -89,18 +110,20 @@ const ContactPage = () => {
         emailjs.init('m3_cXcrmA8tRDUV6B');
 
         emailjs.send('service_79d4mlb', 'template_e3zu3dp', templateParams)
-            .then(() => {
+            .then(async () => {
                 e.target.reset();
                 setPhone('');
+                const submissionId = Date.now().toString();
                 if (typeof window !== 'undefined') {
-                    window.sessionStorage.setItem('wbds_form_conversion_pending', Date.now().toString());
+                    window.sessionStorage.setItem('wbds_form_conversion_pending', submissionId);
                 }
-                if (typeof window !== 'undefined' && window.gtag) {
-                    window.gtag('event', 'form_submit', {
-                        event_category: 'Contact Form',
-                        event_label: 'Contact Page Submit'
-                    });
-                }
+                await sendGtagEvent('form_submit', {
+                    event_category: 'Contact Form',
+                    event_label: 'Contact Page Submit',
+                    form_name: 'Contact / Get Free Valuation Form',
+                    page_url: window.location.href,
+                    submission_id: submissionId,
+                });
                 router.push('/thank-you');
             })
             .catch((error) => {

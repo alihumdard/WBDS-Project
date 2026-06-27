@@ -17,6 +17,28 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      {
+        source: '/get-free-valuation-dead-stocks',
+        has: [
+          {
+            type: 'host',
+            value: 'webuydeadstock.com',
+          },
+        ],
+        destination: 'https://www.webuydeadstocks.com/get-free-valuation-dead-stocks',
+        statusCode: 301,
+      },
+      {
+        source: '/get-free-valuation-dead-stocks',
+        has: [
+          {
+            type: 'host',
+            value: 'www.webuydeadstock.com',
+          },
+        ],
+        destination: 'https://www.webuydeadstocks.com/get-free-valuation-dead-stocks',
+        statusCode: 301,
+      },
       ...sheetRedirects,
       {
         source: '/about-we-buy-dead-stocks',

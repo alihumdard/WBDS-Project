@@ -12,6 +12,8 @@ import { trackCtaClick } from "@/components/analytics";
 const Navbar = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
+  const [isSidebarServicesOpen, setIsSidebarServicesOpen] = useState(false);
   const container = useRef(null);
   const pathname = usePathname();
   const isArabic = pathname === "/arabic" || pathname.startsWith("/arabic/");
@@ -75,9 +77,16 @@ const Navbar = () => {
     return path;
   };
 
+  const serviceLinks = [
+    { label: "Electronics Scrap", href: getHref("/services/electronics-scrap") },
+    { label: "Computer Scrap", href: getHref("/services/computer-scrap") },
+    { label: "Metal Scrap", href: getHref("/services/metal-scrap") },
+    { label: "Copper Scrap", href: getHref("/services/copper-scrap") },
+    { label: "Free Collection", href: getHref("/services/free-collection") },
+  ];
+
   const navLinks = [
     { label: "HOME", href: getHref("/") },
-    { label: "SERVICES", href: getHref("/services") },
     { label: "ABOUT US", href: getHref("/about") },
     { label: "BLOGS", href: getHref("/Blogs") },
     { label: "BOOK A CALL", href: "https://calendly.com/webuydeadstocks-info/30min?primary_color=80d741", track: true },
@@ -123,6 +132,39 @@ const Navbar = () => {
                 </button>
               </div>
             </div>
+            <div
+              className="relative"
+              onMouseEnter={() => setIsServicesOpen(true)}
+              onMouseLeave={() => setIsServicesOpen(false)}
+            >
+              <Link
+                href={getHref("/services")}
+                className="flex items-center text-white font-semibold tracking-wider uppercase hover:text-gray-300 transition-colors"
+                style={{ gap: 'min(0.3vw, 6px)', fontSize: 'min(0.97vw, 14px)' }}
+              >
+                SERVICES
+                <ChevronDown strokeWidth={2} className={`transition-transform duration-300 ${isServicesOpen ? 'rotate-180' : ''}`} style={{ width: 'min(1vw, 16px)', height: 'min(1vw, 16px)' }} />
+              </Link>
+              <div
+                className={`absolute top-full right-0 bg-white rounded-lg shadow-[0_8px_30px_rgb(0,0,0,0.14)] flex flex-col z-50 transition-all duration-300 ${isServicesOpen ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible translate-y-2'}`}
+                style={{ marginTop: 'min(0.6vw, 10px)', minWidth: 'min(18vw, 260px)', paddingBlock: 'min(0.4vw, 8px)' }}
+              >
+                {serviceLinks.map((service) => (
+                  <Link
+                    key={service.href}
+                    href={service.href}
+                    className="text-[#1f2937] font-medium hover:bg-gray-50 hover:text-[#118B50] transition-colors whitespace-nowrap"
+                    style={{ padding: 'min(0.6vw, 10px) min(1vw, 16px)', fontSize: 'min(0.97vw, 14px)' }}
+                    onClick={() => {
+                      setIsServicesOpen(false);
+                      trackCtaClick({ buttonName: service.label, location: 'Navbar Services Dropdown', linkUrl: service.href });
+                    }}
+                  >
+                    {service.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
             <Link href="/get-free-valuation-dead-stocks" className="text-white font-semibold tracking-wider uppercase hover:text-gray-300 transition-colors" style={{ fontSize: 'min(0.97vw, 14px)' }} onClick={() => trackCtaClick({ buttonName: 'Get Free Valuation', location: 'Navbar', linkUrl: '/get-free-valuation-dead-stocks' })}>
               GET A FREE VALUATION
             </Link>
@@ -166,6 +208,38 @@ const Navbar = () => {
 
         <div className="flex-1 flex flex-col justify-center relative z-10" style={{ padding: '0 min(2.5vw, 48px)' }}>
           <nav className="flex flex-col items-end" style={{ gap: 'min(1.4vw, 32px)' }}>
+            <div className="group flex flex-col items-end text-white font-normal tracking-wide uppercase text-left leading-tight">
+              <button
+                type="button"
+                onClick={() => setIsSidebarServicesOpen((open) => !open)}
+                className="flex items-center cursor-pointer hover:text-gray-200 transition-colors"
+                style={{ gap: 'clamp(8px, 0.8vw, 12px)', fontSize: 'clamp(28px, 2.1vw, 40px)' }}
+              >
+                <span className="overflow-hidden">
+                  <span className="nav-link-item translate-y-full block">SERVICES</span>
+                </span>
+                <ChevronDown strokeWidth={1.5} className={`transition-transform duration-300 ${isSidebarServicesOpen ? 'rotate-180' : ''}`} style={{ width: 'clamp(20px, 1.6vw, 28px)', height: 'clamp(20px, 1.6vw, 28px)' }} />
+              </button>
+              <div
+                className={`flex flex-col items-end overflow-hidden transition-all duration-300 ${isSidebarServicesOpen ? 'max-h-80 opacity-100' : 'max-h-0 opacity-0'}`}
+                style={{ gap: 'clamp(8px, 0.7vw, 12px)', marginTop: 'clamp(10px, 0.8vw, 16px)' }}
+              >
+                {serviceLinks.map((service) => (
+                  <Link
+                    key={service.href}
+                    href={service.href}
+                    className="text-white/85 hover:text-white transition-colors uppercase tracking-widest"
+                    style={{ fontSize: 'clamp(13px, 1vw, 16px)' }}
+                    onClick={() => {
+                      trackCtaClick({ buttonName: service.label, location: 'Sidebar Services Dropdown', linkUrl: service.href });
+                      toggleSidebar();
+                    }}
+                  >
+                    {service.label}
+                  </Link>
+                ))}
+              </div>
+            </div>
             {navLinks.map((link) => (
               <Link
                 key={link.label}

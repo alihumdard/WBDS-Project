@@ -1,9 +1,10 @@
-import fs from 'fs';
-import path from 'path';
 import Services from '../page';
 import { categories } from '@/lib/data';
 import LenisResizer from '@/components/LenisResizer';
 import ServiceFormTracker from '@/components/ServiceFormTracker';
+import connectToDatabase from '@/lib/mongodb';
+import ServicePage from '@/models/ServicePage';
+import { getStaticServiceHtml, serviceTitleFromSlug, sanitizeServiceSlug } from '@/lib/servicePages';
 
 function generateSlug(name) {
     return name.toLowerCase().replace(/ & /g, '-and-').replace(/\s+/g, '-');
@@ -14,36 +15,24 @@ function getCategoryMatch(slug) {
     return categories.find(c => generateSlug(c.name) === slug);
 }
 
-function getServiceHtml(slug) {
-
-    const safeSlug = slug.replace(/[^a-zA-Z0-9-]/g, '');
-    const filePath = path.join(process.cwd(), 'service-next', `${safeSlug}.html`);
-    if (!fs.existsSync(filePath)) return null;
-    
-    const rawHtml = fs.readFileSync(filePath, 'utf-8');
-    
-    const blogStartIndex = rawHtml.indexOf('<div class="blog');
-    let blogEndIndex = rawHtml.indexOf('<div class="bg-[#121212]');
-    if (blogEndIndex === -1) {
-        blogEndIndex = rawHtml.indexOf('<footer');
+async function getPublishedServicePage(slug) {
+    try {
+        await connectToDatabase();
+        return await ServicePage.findOne({ slug: sanitizeServiceSlug(slug), status: 'published' }).lean();
+    } catch (error) {
+        console.error('Service page database lookup failed:', error);
+        return null;
     }
-    
-    let content = rawHtml;
+}
 
-    if (blogStartIndex !== -1 && blogEndIndex !== -1) {
-        content = rawHtml.substring(blogStartIndex, blogEndIndex);
-    } else {
-        const bodyMatch = rawHtml.match(/<body[^>]*>([\s\S]*)<\/body>/i);
-        if (bodyMatch) content = bodyMatch[1];
+function parseSchemaJson(schemaJson) {
+    if (!schemaJson) return null;
+    try {
+        return JSON.parse(schemaJson);
+    } catch (error) {
+        console.error('Invalid service schema JSON:', error);
+        return null;
     }
-    
-
-    content = content.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
-    
-
-    content = content.replace(/href="https?:\/\/(www\.)?webuydeadstocks\.com\/(service|services)\/([^"]*)"/gi, 'href="/services/$3"');
-    
-    return content;
 }
 
 export async function generateMetadata({ params }) {
@@ -60,11 +49,39 @@ export async function generateMetadata({ params }) {
         };
     }
     
-    if (getServiceHtml(slug)) {
-        const title = slug
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+    const databasePage = await getPublishedServicePage(slug);
+    if (databasePage) {
+        const metadata = {
+            title: databasePage.seo?.title || `${databasePage.title} - We Buy Dead Stocks`,
+            description: databasePage.seo?.description || undefined,
+        };
+
+        if (databasePage.seo?.canonicalUrl) {
+            metadata.alternates = {
+                canonical: databasePage.seo.canonicalUrl,
+            };
+        }
+
+        if (databasePage.featuredImage?.url) {
+            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://webuydeadstocks.com";
+            const imageUrl = databasePage.featuredImage.url.startsWith("http")
+                ? databasePage.featuredImage.url
+                : `${baseUrl}${databasePage.featuredImage.url}`;
+            metadata.openGraph = {
+                images: [
+                    {
+                        url: imageUrl,
+                        alt: databasePage.featuredImage.altText || databasePage.title,
+                    },
+                ],
+            };
+        }
+
+        return metadata;
+    }
+    
+    if (getStaticServiceHtml(slug)) {
+        const title = serviceTitleFromSlug(slug);
         return {
             title: `${title} - We Buy Dead Stocks`,
         }
@@ -105,12 +122,14 @@ export default async function SlugPage({ params }) {
         );
     }
 
-    const serviceHtml = getServiceHtml(slug);
+    const databasePage = await getPublishedServicePage(slug);
+    const staticHtml = getStaticServiceHtml(slug);
+    const shouldUseCustomContent = !staticHtml && databasePage?.contentSource !== 'static' && databasePage?.contentHtml;
+    const serviceHtml = shouldUseCustomContent ? databasePage.contentHtml : staticHtml;
     if (serviceHtml) {
-        const title = slug
-            .split('-')
-            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-            .join(' ');
+        const title = databasePage?.h1 || databasePage?.title || serviceTitleFromSlug(slug);
+        const schema = parseSchemaJson(databasePage?.schemaJson);
+        const shouldShowFeaturedImage = !staticHtml && databasePage?.featuredImage?.url;
             
         return (
             <div className="min-h-screen flex flex-col overflow-x-hidden bg-white">
@@ -143,6 +162,15 @@ export default async function SlugPage({ params }) {
 
                 
                 <div className="bg-white">
+                    {shouldShowFeaturedImage && (
+                        <div className="mx-auto max-w-6xl px-6 pt-12">
+                            <img
+                                src={databasePage.featuredImage.url}
+                                alt={databasePage.featuredImage.altText || title}
+                                className="w-full max-h-[480px] rounded-lg object-cover"
+                            />
+                        </div>
+                    )}
                     <div 
                         data-service-html
                         className="w-full lg:w-[100%] py-16"
@@ -151,6 +179,12 @@ export default async function SlugPage({ params }) {
                 </div>
                 <ServiceFormTracker serviceTitle={title} />
                 <LenisResizer />
+                {schema && (
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+                    />
+                )}
             </div>
         );
     }
