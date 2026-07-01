@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+require('dotenv').config({ path: '.env.local' });
 
-const MONGODB_URI = 'mongodb://127.0.0.1:27017/webuydeadstocks';
+const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/webuydeadstocks';
 
 const adminSchema = new mongoose.Schema(
   {
