@@ -332,28 +332,6 @@ export default function ServicePageForm({ mode, slug }) {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Internal links notes</label>
-                <textarea
-                  name="internalLinks"
-                  value={formData.internalLinks}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-[#008060] outline-none"
-                  placeholder="Track important internal links for this service page."
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Image alt text</label>
-                <textarea
-                  name="imageAltText"
-                  value={formData.imageAltText}
-                  onChange={handleChange}
-                  rows={3}
-                  className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-[#008060] outline-none"
-                  placeholder="SEO alt text notes for service page images."
-                />
-              </div>
-              <div>
                 <label className="block text-sm font-medium mb-1">Schema JSON</label>
                 <textarea
                   name="schemaJson"

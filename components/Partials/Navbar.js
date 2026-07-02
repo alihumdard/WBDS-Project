@@ -80,8 +80,8 @@ const Navbar = () => {
   const serviceLinks = [
     { label: "Electronics Scrap", href: getHref("/services/electronics-scrap") },
     { label: "Computer Scrap", href: getHref("/services/computer-scrap") },
-    { label: "Metal Scrap", href: getHref("/services/metal-scrap") },
-    { label: "Copper Scrap", href: getHref("/services/copper-scrap") },
+    { label: "E-Waste", href: getHref("/services/e-waste") },
+    { label: "We Buy Dead Stocks", href: getHref("/services/we-buy-dead-stocks") },
     { label: "Free Collection", href: getHref("/services/free-collection") },
   ];
 

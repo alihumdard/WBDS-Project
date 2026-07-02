@@ -35,6 +35,28 @@ function parseSchemaJson(schemaJson) {
     }
 }
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://webuydeadstocks.com";
+
+function buildCanonicalUrl(slug) {
+    return `${SITE_URL}/services/${slug}`;
+}
+
+function buildServiceSchema(databasePage, slug, title) {
+    return {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": title,
+        "url": buildCanonicalUrl(slug),
+        "description": databasePage.seo?.description || undefined,
+        "image": databasePage.featuredImage?.url || undefined,
+        "provider": {
+            "@type": "Organization",
+            "name": "We Buy Dead Stocks",
+            "url": SITE_URL,
+        },
+    };
+}
+
 export async function generateMetadata({ params }) {
     const { slug } = await params;
     
@@ -56,17 +78,14 @@ export async function generateMetadata({ params }) {
             description: databasePage.seo?.description || undefined,
         };
 
-        if (databasePage.seo?.canonicalUrl) {
-            metadata.alternates = {
-                canonical: databasePage.seo.canonicalUrl,
-            };
-        }
+        metadata.alternates = {
+            canonical: databasePage.seo?.canonicalUrl || buildCanonicalUrl(slug),
+        };
 
         if (databasePage.featuredImage?.url) {
-            const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://webuydeadstocks.com";
             const imageUrl = databasePage.featuredImage.url.startsWith("http")
                 ? databasePage.featuredImage.url
-                : `${baseUrl}${databasePage.featuredImage.url}`;
+                : `${SITE_URL}${databasePage.featuredImage.url}`;
             metadata.openGraph = {
                 images: [
                     {
@@ -128,7 +147,8 @@ export default async function SlugPage({ params }) {
     const serviceHtml = shouldUseCustomContent ? databasePage.contentHtml : staticHtml;
     if (serviceHtml) {
         const title = databasePage?.h1 || databasePage?.title || serviceTitleFromSlug(slug);
-        const schema = parseSchemaJson(databasePage?.schemaJson);
+        const schema = parseSchemaJson(databasePage?.schemaJson)
+            || (databasePage ? buildServiceSchema(databasePage, slug, title) : null);
         const shouldShowFeaturedImage = !staticHtml && databasePage?.featuredImage?.url;
             
         return (
