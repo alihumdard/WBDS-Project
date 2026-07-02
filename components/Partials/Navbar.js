@@ -208,6 +208,28 @@ const Navbar = () => {
 
         <div className="flex-1 flex flex-col justify-center relative z-10" style={{ padding: '0 min(2.5vw, 48px)' }}>
           <nav className="flex flex-col items-end" style={{ gap: 'min(1.4vw, 32px)' }}>
+            {navLinks.slice(0, navLinks.findIndex((link) => link.label === 'BLOGS') + 1).map((link) => (
+              <Link
+                key={link.label}
+                href={link.href}
+                className="group flex flex-col cursor-pointer text-white font-normal tracking-wide hover:text-gray-200 transition-colors uppercase text-left leading-tight"
+                style={{ fontSize: 'clamp(28px, 2.1vw, 40px)' }}
+                onClick={() => {
+                  if (link.track) {
+                    trackCtaClick({ buttonName: link.label, location: 'Sidebar', linkUrl: link.href });
+                  }
+                  toggleSidebar();
+                }}
+              >
+                {link.label.split('\n').map((line, index) => (
+                  <div key={index} className="overflow-hidden">
+                    <div className="nav-link-item translate-y-full">
+                      {line}
+                    </div>
+                  </div>
+                ))}
+              </Link>
+            ))}
             <div className="group flex flex-col items-end text-white font-normal tracking-wide uppercase text-left leading-tight">
               <button
                 type="button"
@@ -240,7 +262,7 @@ const Navbar = () => {
                 ))}
               </div>
             </div>
-            {navLinks.map((link) => (
+            {navLinks.slice(navLinks.findIndex((link) => link.label === 'BLOGS') + 1).map((link) => (
               <Link
                 key={link.label}
                 href={link.href}
