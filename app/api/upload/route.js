@@ -28,7 +28,7 @@ export async function POST(request) {
         const uniqueSuffix = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}`;
         const filename = `${uniqueSuffix}-${baseName}${ext}`;
         
-        const uploadDir = path.join(process.cwd(), "public", "uploads");
+        const uploadDir = path.join(process.cwd(), "uploads");
         await mkdir(uploadDir, { recursive: true });
 
         const filepath = path.join(uploadDir, filename);
