@@ -12,8 +12,33 @@ export const generateSlug = (name) => {
   return name.toLowerCase().replace(/ & /g, '-and-').replace(/\s+/g, '-');
 };
 
+const STOP_WORDS = new Set(['a', 'an', 'the', 'in', 'of', 'for', 'to', 'and', 'your', 'our']);
+
+function shortenTitle(title) {
+  const words = title.trim().split(/\s+/).filter((word) => !STOP_WORDS.has(word.toLowerCase()));
+  return (words.length ? words : title.trim().split(/\s+/)).slice(0, 2).join(' ');
+}
+
 export default function Services() {
   const [activeCategory, setActiveCategory] = useState(categories[0]);
+  const [dynamicServices, setDynamicServices] = useState([]);
+
+  useEffect(() => {
+    fetch('/api/service-pages/published')
+      .then((res) => res.json())
+      .then((data) => {
+        const existingSlugs = new Set(services.map((service) => service.href.replace('/services/', '')));
+        const items = (data.pages || [])
+          .filter((page) => !existingSlugs.has(page.slug))
+          .map((page) => ({
+            id: `dynamic-${page.slug}`,
+            name: shortenTitle(page.title),
+            href: `/services/${page.slug}`,
+          }));
+        setDynamicServices(items);
+      })
+      .catch(() => setDynamicServices([]));
+  }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
@@ -83,18 +108,21 @@ export default function Services() {
 
           
           <div className="flex flex-wrap gap-3">
-            {services.map((service, index) => (
-              <Link
-                key={service.id}
-                href={service.href}
-                className="inline-block text-sm md:text-base text-green-600 hover:text-green-700 hover:underline transition-colors"
-              >
-                {service.name}
-                {index < services.length - 1 && (
-                  <span className="text-gray-400 ml-3">|</span>
-                )}
-              </Link>
-            ))}
+            {(() => {
+              const allServices = [...services, ...dynamicServices];
+              return allServices.map((service, index) => (
+                <Link
+                  key={service.id}
+                  href={service.href}
+                  className="inline-block text-sm md:text-base text-green-600 hover:text-green-700 hover:underline transition-colors"
+                >
+                  {service.name}
+                  {index < allServices.length - 1 && (
+                    <span className="text-gray-400 ml-3">|</span>
+                  )}
+                </Link>
+              ));
+            })()}
           </div>
         </div>
       </section>

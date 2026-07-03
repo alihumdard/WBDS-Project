@@ -191,10 +191,20 @@ export default async function SlugPage({ params }) {
                             />
                         </div>
                     )}
-                    <div 
+                    <div
                         data-service-html
-                        className="w-full lg:w-[100%] py-16"
-                        dangerouslySetInnerHTML={{ __html: serviceHtml }} 
+                        className="prose prose-lg max-w-none w-full overflow-x-hidden [overflow-wrap:break-word] px-6 sm:px-8 lg:px-12 py-16
+                        prose-headings:text-gray-900 prose-headings:font-bold prose-headings:text-3xl prose-headings:mb-6 prose-headings:mt-12
+                        prose-p:text-gray-700 prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6
+                        prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:break-words
+                        prose-strong:text-gray-900 prose-strong:font-semibold
+                        prose-ul:text-gray-700 prose-ul:text-lg
+                        prose-ol:text-gray-700 prose-ol:text-lg
+                        prose-img:rounded-lg
+                        prose-table:w-full
+                        [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:text-gray-900 [&>h2]:mb-4 [&>h2]:mt-10
+                        [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:text-gray-900 [&>h3]:mb-4 [&>h3]:mt-8"
+                        dangerouslySetInnerHTML={{ __html: serviceHtml }}
                     />
                 </div>
                 <ServiceFormTracker serviceTitle={title} />

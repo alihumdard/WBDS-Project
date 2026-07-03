@@ -34,6 +34,25 @@ function slugify(value) {
   return value.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "").replace(/-+/g, "-");
 }
 
+const SITE_URL = "https://webuydeadstocks.com";
+
+function buildDefaultSchemaJson({ title, slug, seoDescription, featuredImageUrl }) {
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: title || "Untitled service",
+    url: `${SITE_URL}/services/${slug || "your-slug"}`,
+    description: seoDescription || undefined,
+    image: featuredImageUrl || undefined,
+    provider: {
+      "@type": "Organization",
+      name: "We Buy Dead Stocks",
+      url: SITE_URL,
+    },
+  };
+  return JSON.stringify(schema, null, 2);
+}
+
 export default function ServicePageForm({ mode, slug }) {
   const router = useRouter();
   const [formData, setFormData] = useState(emptyForm);
@@ -317,7 +336,7 @@ export default function ServicePageForm({ mode, slug }) {
                   value={formData.canonicalUrl}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-[#008060] outline-none"
-                  placeholder="https://webuydeadstocks.com/services/computer-scrap"
+                  placeholder={`${SITE_URL}/services/${formData.slug || "your-slug"}`}
                 />
               </div>
               <div>
@@ -328,7 +347,7 @@ export default function ServicePageForm({ mode, slug }) {
                   value={formData.h1}
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded p-2 focus:ring-2 focus:ring-[#008060] outline-none"
-                  placeholder="Optional SEO heading override"
+                  placeholder={formData.title || "Optional SEO heading override"}
                 />
               </div>
               <div>
@@ -339,9 +358,16 @@ export default function ServicePageForm({ mode, slug }) {
                   onChange={handleChange}
                   rows={8}
                   className="w-full font-mono text-sm border border-gray-300 rounded p-2 focus:ring-2 focus:ring-[#008060] outline-none"
-                  placeholder='{"@context":"https://schema.org","@type":"Service"}'
+                  placeholder={buildDefaultSchemaJson({
+                    title: formData.title,
+                    slug: formData.slug,
+                    seoDescription: formData.seoDescription,
+                    featuredImageUrl: formData.featuredImageUrl,
+                  })}
                 />
-                <p className="text-xs text-gray-500 mt-1">Invalid JSON will be ignored on the public page instead of breaking the page.</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  Left blank, the page will use the auto-generated schema shown above as a preview. Invalid JSON will also be ignored on the public page instead of breaking it.
+                </p>
               </div>
             </div>
           </div>

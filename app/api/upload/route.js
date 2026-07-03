@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
+import crypto from "crypto";
 import { isAdminRequest } from "@/lib/adminApiAuth";
 
 
@@ -22,8 +23,10 @@ export async function POST(request) {
         const buffer = Buffer.from(bytes);
 
 
-        const pureName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '');
-        const filename = `${Date.now()}-${pureName}`;
+        const ext = path.extname(file.name).replace(/[^a-zA-Z0-9.]/g, '');
+        const baseName = path.basename(file.name, path.extname(file.name)).replace(/[^a-zA-Z0-9\-_]/g, '');
+        const uniqueSuffix = `${Date.now()}-${crypto.randomBytes(6).toString('hex')}`;
+        const filename = `${uniqueSuffix}-${baseName}${ext}`;
         
         const uploadDir = path.join(process.cwd(), "public", "uploads");
         await mkdir(uploadDir, { recursive: true });
