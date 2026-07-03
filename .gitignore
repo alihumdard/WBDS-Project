@@ -37,8 +37,6 @@ yarn-error.log*
 .vercel
 
 # uploaded user content
-/public/uploads/*
-!/public/uploads/.gitkeep
 /uploads/*
 !/uploads/.gitkeep
 
