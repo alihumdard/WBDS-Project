@@ -4,7 +4,7 @@ import LenisResizer from '@/components/LenisResizer';
 import ServiceFormTracker from '@/components/ServiceFormTracker';
 import connectToDatabase from '@/lib/mongodb';
 import ServicePage from '@/models/ServicePage';
-import { getStaticServiceHtml, serviceTitleFromSlug, sanitizeServiceSlug } from '@/lib/servicePages';
+import { getStaticServiceHtml, serviceTitleFromSlug, sanitizeServiceSlug, buildFaqSchema } from '@/lib/servicePages';
 
 function generateSlug(name) {
     return name.toLowerCase().replace(/ & /g, '-and-').replace(/\s+/g, '-');
@@ -149,6 +149,7 @@ export default async function SlugPage({ params }) {
         const title = databasePage?.h1 || databasePage?.title || serviceTitleFromSlug(slug);
         const schema = parseSchemaJson(databasePage?.schemaJson)
             || (databasePage ? buildServiceSchema(databasePage, slug, title) : null);
+        const faqSchema = buildFaqSchema(serviceHtml);
         const shouldShowFeaturedImage = !staticHtml && databasePage?.featuredImage?.url;
             
         return (
@@ -213,6 +214,12 @@ export default async function SlugPage({ params }) {
                     <script
                         type="application/ld+json"
                         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+                    />
+                )}
+                {faqSchema && (
+                    <script
+                        type="application/ld+json"
+                        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
                     />
                 )}
             </div>
