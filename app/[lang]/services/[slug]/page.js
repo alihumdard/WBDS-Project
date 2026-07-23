@@ -194,7 +194,7 @@ export default async function SlugPage({ params }) {
                     )}
                     <div
                         data-service-html
-                        className="prose prose-lg max-w-none w-full overflow-x-hidden [overflow-wrap:break-word] px-6 sm:px-8 lg:px-12 py-16
+                        className="prose prose-lg max-w-none w-full overflow-x-hidden [overflow-wrap:normal] px-6 sm:px-8 lg:px-12 py-16
                         prose-headings:text-gray-900 prose-headings:font-bold prose-headings:text-3xl prose-headings:mb-6 prose-headings:mt-12
                         prose-p:text-gray-700 prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6
                         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:break-words
