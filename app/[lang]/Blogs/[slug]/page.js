@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import connectToDatabase from '@/lib/mongodb';
 import Blog from '@/models/Blog';
-import { replaceOutdatedInternalHrefs } from '@/lib/urlReplacements';
+import { replaceOutdatedInternalHrefs, normalizeNonBreakingSpaces } from '@/lib/urlReplacements';
 
 async function fetchLocalArticle(slug) {
     await connectToDatabase();
@@ -119,7 +119,7 @@ export default async function BlogPostPage({ params }) {
 
                     
                     <div
-                        className="prose prose-lg max-w-none w-full overflow-x-hidden [overflow-wrap:normal]
+                        className="prose prose-lg max-w-none w-full overflow-x-hidden [overflow-wrap:break-word]
                         prose-headings:text-gray-900 prose-headings:font-bold prose-headings:text-3xl prose-headings:mb-6 prose-headings:mt-12
                         prose-p:text-gray-700 prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6
                         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline prose-a:break-words
@@ -128,7 +128,7 @@ export default async function BlogPostPage({ params }) {
                         prose-ol:text-gray-700 prose-ol:text-lg
                         [&>h2]:text-4xl [&>h2]:font-bold [&>h2]:text-gray-900 [&>h2]:mb-4 [&>h2]:mt-10
                         [&>h3]:text-2xl [&>h3]:font-bold [&>h3]:text-gray-900 [&>h3]:mb-4 [&>h3]:mt-8"
-                        dangerouslySetInnerHTML={{ __html: replaceOutdatedInternalHrefs(article.contentHtml) }}
+                        dangerouslySetInnerHTML={{ __html: normalizeNonBreakingSpaces(replaceOutdatedInternalHrefs(article.contentHtml)) }}
                     />
                 </div>
             </div>
