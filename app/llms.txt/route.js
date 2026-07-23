@@ -39,7 +39,7 @@ export async function GET() {
     `- [Homepage](${SITE_URL})`,
     `- [About](${SITE_URL}/about)`,
     `- [Contact](${SITE_URL}/contact)`,
-    `- [Free Valuation](${SITE_URL}/get-free-valuation-dead-stocks)`,
+    `- [Free Valuation](https://www.webuydeadstock.com/get-free-valuation-dead-stocks)`,
     `- [Careers](${SITE_URL}/career)`,
     `- [Environment](${SITE_URL}/environment)`,
     "",

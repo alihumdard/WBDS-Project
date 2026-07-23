@@ -142,7 +142,7 @@ export default function AboutUs() {
             We Have You Covered
           </h2>
           <Link
-            href="/get-free-valuation-dead-stocks"
+            href="https://www.webuydeadstock.com/get-free-valuation-dead-stocks"
             className="inline-block bg-white text-gray-900 px-10 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg"
             target="_blank"
           >

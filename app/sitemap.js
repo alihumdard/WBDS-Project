@@ -9,7 +9,7 @@ export default async function sitemap() {
     { url: `${baseUrl}/services`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${baseUrl}/about`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/contact`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${baseUrl}/get-free-valuation-dead-stocks`, changeFrequency: "monthly", priority: 0.7 },
+    { url: "https://www.webuydeadstock.com/get-free-valuation-dead-stocks", changeFrequency: "monthly", priority: 0.7 },
     { url: `${baseUrl}/career`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/environment`, changeFrequency: "monthly", priority: 0.6 },
     { url: `${baseUrl}/privacy`, changeFrequency: "yearly", priority: 0.4 },
